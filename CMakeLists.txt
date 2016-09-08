@@ -1,14 +1,30 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(tapi_iiwa_control)
 
+# Use specified C++ standard
+set(CMAKE_CXX_STANDARD 11)
+# ...and for older compilers
+add_definitions(-std=c++11)
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED)
+find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  roscpp
+  std_msgs
+  tapi_iiwa
+  tapi_lib
+  tf
+  tf_conversions
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
+# Qt
+# Find includes in corresponding build directories
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -98,7 +114,7 @@ find_package(catkin REQUIRED)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES tapi_iiwa_control
-#  CATKIN_DEPENDS other_catkin_pkg
+  CATKIN_DEPENDS geometry_msgs message_runtime roscpp std_msgs tapi_iiwa tapi_lib tf tf_conversions
 #  DEPENDS system_lib
 )
 
@@ -108,7 +124,9 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-# include_directories(include)
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
 
 ## Declare a C++ library
 # add_library(tapi_iiwa_control
@@ -121,16 +139,19 @@ catkin_package(
 # add_dependencies(tapi_iiwa_control ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
-# add_executable(tapi_iiwa_control_node src/tapi_iiwa_control_node.cpp)
+add_executable(tapi_iiwa_control
+  src/main.cpp
+  src/tapi_iiwa_control.cpp
+)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
-# add_dependencies(tapi_iiwa_control_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(tapi_iiwa_control ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(tapi_iiwa_control_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(tapi_iiwa_control
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
