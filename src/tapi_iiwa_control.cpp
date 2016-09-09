@@ -120,6 +120,8 @@ void iiwaControl::gotCurrentPose(const geometry_msgs::PoseStamped::ConstPtr& msg
 
 void iiwaControl::gotJoy(const sensor_msgs::Joy::ConstPtr& msg)
 {
+  if (msg->axes.size() < 6)
+    return;
   angular[0] = msg->axes[0];
   angular[1] = msg->axes[1];
   angular[2] = msg->axes[2];
