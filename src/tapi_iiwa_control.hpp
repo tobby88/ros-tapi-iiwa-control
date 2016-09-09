@@ -1,4 +1,6 @@
 /******************************************************************************
+*  Copyright (C) 2016 by Tobias Holst                                         *
+*                                                                             *
 *  This file is part of tapi_iiwa_control.                                    *
 *                                                                             *
 *  tapi_iiwa_control is free software: you can redistribute it and/or modify  *
