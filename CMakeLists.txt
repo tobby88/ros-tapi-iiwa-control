@@ -16,7 +16,6 @@ find_package(catkin REQUIRED COMPONENTS
   tapi_iiwa
   tapi_lib
   tf
-  tf_conversions
 )
 
 ## System dependencies are found with CMake's conventions
@@ -114,7 +113,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES tapi_iiwa_control
-  CATKIN_DEPENDS geometry_msgs message_runtime roscpp std_msgs tapi_iiwa tapi_lib tf tf_conversions
+  CATKIN_DEPENDS geometry_msgs message_runtime roscpp std_msgs tapi_iiwa tapi_lib tf
 #  DEPENDS system_lib
 )
 
