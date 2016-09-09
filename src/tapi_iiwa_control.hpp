@@ -1,6 +1,7 @@
 #ifndef TAPI_IIWA_CONTROL_H
 #define TAPI_IIWA_CONTROL_H
 
+#include <thread>
 #include "geometry_msgs/PoseStamped.h"
 #include "ros/node_handle.h"
 #include "ros/publisher.h"
@@ -23,6 +24,7 @@ public:
 
 private:
   // Private member functions
+  void activate();
   void gotAngularX(const std_msgs::Float64::ConstPtr& msg);
   void gotAngularY(const std_msgs::Float64::ConstPtr& msg);
   void gotAngularZ(const std_msgs::Float64::ConstPtr& msg);
@@ -31,20 +33,24 @@ private:
   void gotLinearX(const std_msgs::Float64::ConstPtr& msg);
   void gotLinearY(const std_msgs::Float64::ConstPtr& msg);
   void gotLinearZ(const std_msgs::Float64::ConstPtr& msg);
+  void sendData();
 
   // Private member variables
+  std::thread* activateThread;
   double angular[3];
   double* coefficients[6];
   double currentPosition[3];
   double currentRotEuler[3];
   tf::Quaternion currentRotQuat;
-  bool gotValues[6];
+  bool gotData;
   std_msgs::Header header;
   ros::ServiceClient** iiwaModeClient;
   ros::Publisher* iiwaPub;
   double linear[3];
   ros::NodeHandle* nh;
   ros::Publisher* posePub[6];
+  std::thread* sendThread;
+  bool synchronized;
   Tapi::ServiceClient* tclient;
   Tapi::Publisher* tpub;
   Tapi::Subscriber* tsub;
