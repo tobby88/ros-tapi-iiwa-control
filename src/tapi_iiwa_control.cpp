@@ -96,7 +96,7 @@ void iiwaControl::activate()
 {
   while (ros::ok())
   {
-    this_thread::sleep_for(chrono::milliseconds(1000));
+    this_thread::sleep_for(chrono::milliseconds(50));
     if (*iiwaModeClient)
     {
       tapi_iiwa::OpenIGTLStateService msg;
@@ -185,7 +185,7 @@ void iiwaControl::gotLinearZ(const std_msgs::Float64::ConstPtr& msg)
 
 void iiwaControl::sendData()
 {
-  unsigned int runsPerSecond = 10;
+  unsigned int runsPerSecond = 20;
   unsigned int waitTime = 1000 / runsPerSecond;
   double speed_cm_per_s = 10.0;
   double speedFactor = speed_cm_per_s / 100 / runsPerSecond;
