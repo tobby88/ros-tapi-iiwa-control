@@ -76,7 +76,6 @@ iiwaControl::iiwaControl(ros::NodeHandle* nh) : nh(nh)
   posePub[4] = tpub->AddFeature<std_msgs::Float64>("Current Y-Rotation of Flange", 1);
   posePub[5] = tpub->AddFeature<std_msgs::Float64>("Current Z-Rotation of Flange", 1);
   activateThread = new thread(&iiwaControl::activate, this);
-
 }
 
 iiwaControl::~iiwaControl()
@@ -123,8 +122,10 @@ void iiwaControl::gotAngularZ(const std_msgs::Float64::ConstPtr& msg)
 
 void iiwaControl::gotCurrentPose(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
-  if(msg->pose.position.x == 0 && msg->pose.position.y == 0 && msg->pose.position.z == 0 && msg->pose.orientation.w == 0 && msg->pose.orientation.x == 0 && msg->pose.orientation.y == 0 && msg->pose.orientation.z == 0)
-      return;
+  if (msg->pose.position.x == 0 && msg->pose.position.y == 0 && msg->pose.position.z == 0 &&
+      msg->pose.orientation.w == 0 && msg->pose.orientation.x == 0 && msg->pose.orientation.y == 0 &&
+      msg->pose.orientation.z == 0)
+    return;
   currentPosition[0] = msg->pose.position.x;
   currentPosition[1] = msg->pose.position.y;
   currentPosition[2] = msg->pose.position.z;
@@ -143,7 +144,7 @@ void iiwaControl::gotCurrentPose(const geometry_msgs::PoseStamped::ConstPtr& msg
   pubmsg[5].data = currentRotEuler[2];
   for (int i = 0; i < 6; i++)
     posePub[i]->publish(pubmsg[i]);
-  if(firstPose)
+  if (firstPose)
   {
     controlPosition[0] = currentPosition[0];
     controlPosition[1] = currentPosition[1];
