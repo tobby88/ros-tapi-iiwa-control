@@ -73,10 +73,12 @@ private:
   std::thread* activateThread;
   double angular[3];
   double* coefficients[6];
+  double controlPosition[3];
+  double controlRotEuler[3];
   double currentPosition[3];
   double currentRotEuler[3];
   tf::Quaternion currentRotQuat;
-  bool gotData;
+  bool firstPose;
   std_msgs::Header header;
   ros::ServiceClient** iiwaModeClient;
   ros::Publisher* iiwaPub;
@@ -84,7 +86,6 @@ private:
   ros::NodeHandle* nh;
   ros::Publisher* posePub[6];
   std::thread* sendThread;
-  bool synchronized;
   Tapi::ServiceClient* tclient;
   Tapi::Publisher* tpub;
   Tapi::Subscriber* tsub;
