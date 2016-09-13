@@ -207,7 +207,8 @@ void iiwaControl::sendData()
       header.seq++;
       header.stamp = ros::Time::now();
       geometry_msgs::PoseStamped msg;
-      msg.header = header;
+      msg.header.seq = header.seq;
+      msg.header.stamp = header.stamp;
       msg.pose.position.x = goalPosition[0];
       msg.pose.position.y = goalPosition[1];
       msg.pose.position.z = goalPosition[2];
