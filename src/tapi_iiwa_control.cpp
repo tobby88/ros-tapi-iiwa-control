@@ -54,9 +54,12 @@ namespace Tapi
 // Constructor/Destructor
 iiwaControl::iiwaControl(ros::NodeHandle* nh) : nh(nh)
 {
+  // Set default values
   firstPose = true;
   std::fill(angular, angular + sizeof(angular), 0.0);
   std::fill(linear, linear + sizeof(linear), 0.0);
+
+  // Create (Tapi compliant) subscribers, publishers and serviceclients
   tclient = new Tapi::ServiceClient(nh, "iiwa Controller");
   tpub = new Tapi::Publisher(nh, "iiwa Controller");
   tsub = new Tapi::Subscriber(nh, "iiwa Controller");
@@ -83,6 +86,8 @@ iiwaControl::iiwaControl(ros::NodeHandle* nh) : nh(nh)
   posePub[3] = tpub->AddFeature<std_msgs::Float64>("Current X-Rotation of Flange", 1);
   posePub[4] = tpub->AddFeature<std_msgs::Float64>("Current Y-Rotation of Flange", 1);
   posePub[5] = tpub->AddFeature<std_msgs::Float64>("Current Z-Rotation of Flange", 1);
+
+  // Start the thread to activate the robot
   activateThread = new thread(&iiwaControl::activate, this);
 }
 
@@ -103,8 +108,11 @@ void iiwaControl::activate()
   while (ros::ok())
   {
     this_thread::sleep_for(chrono::milliseconds(50));
+
+    // Check whether the ServiceClient is connected
     if (*iiwaModeClient)
     {
+      // Call the service with a specific message to start movement
       tapi_iiwa::OpenIGTLStateService msg;
       msg.request.state = "MoveToPose;rob;";
       if (!(*iiwaModeClient)->call(msg) || !msg.response.alive)
@@ -130,10 +138,13 @@ void iiwaControl::gotAngularZ(const std_msgs::Float64::ConstPtr& msg)
 
 void iiwaControl::gotCurrentPose(const geometry_msgs::PoseStamped::ConstPtr& msg)
 {
+  // Check if the pose is valid. If not: return
   if (msg->pose.position.x == 0 && msg->pose.position.y == 0 && msg->pose.position.z == 0 &&
       msg->pose.orientation.w == 0 && msg->pose.orientation.x == 0 && msg->pose.orientation.y == 0 &&
       msg->pose.orientation.z == 0)
     return;
+
+  // Save the current position
   currentPosition[0] = msg->pose.position.x;
   currentPosition[1] = msg->pose.position.y;
   currentPosition[2] = msg->pose.position.z;
@@ -141,8 +152,12 @@ void iiwaControl::gotCurrentPose(const geometry_msgs::PoseStamped::ConstPtr& msg
   currentRotQuat.setX(msg->pose.orientation.x);
   currentRotQuat.setY(msg->pose.orientation.y);
   currentRotQuat.setZ(msg->pose.orientation.z);
+
+  // Calculate the rotation matrice from the quaternion and then get the euler angles in radian
   tf::Matrix3x3 temp(currentRotQuat);
   temp.getRPY(currentRotEuler[0], currentRotEuler[1], currentRotEuler[2]);
+
+  // Publish the current position
   std_msgs::Float64 pubmsg[6];
   pubmsg[0].data = currentPosition[0];
   pubmsg[1].data = currentPosition[1];
@@ -152,6 +167,9 @@ void iiwaControl::gotCurrentPose(const geometry_msgs::PoseStamped::ConstPtr& msg
   pubmsg[5].data = currentRotEuler[2];
   for (int i = 0; i < 6; i++)
     posePub[i]->publish(pubmsg[i]);
+
+  // If this is the first time we get a valid position we take this as the base (starting point) for "controlPosition"
+  // to do an open loop control and start the sendData-thread
   if (firstPose)
   {
     controlPosition[0] = currentPosition[0];
@@ -167,6 +185,8 @@ void iiwaControl::gotCurrentPose(const geometry_msgs::PoseStamped::ConstPtr& msg
 
 void iiwaControl::gotJoy(const sensor_msgs::Joy::ConstPtr& msg)
 {
+  // Save the data in the right order (maybe only valid for spacenavs? Other devices better connect to the single
+  // "channels"
   if (msg->axes.size() < 6)
     return;
   angular[0] = msg->axes[3];
@@ -194,15 +214,19 @@ void iiwaControl::gotLinearZ(const std_msgs::Float64::ConstPtr& msg)
 
 void iiwaControl::sendData()
 {
+  // Calculate the factors based on the given speeds
   unsigned int runsPerSecond = 20;
   unsigned int waitTime = 1000 / runsPerSecond;
   double speed_cm_per_s = 10.0;
   double speedFactor = speed_cm_per_s / 100 / runsPerSecond;
   double degree_per_s = 45.0 * PI / 180.0;
   double angleFactor = degree_per_s / runsPerSecond;
+
   while (ros::ok())
   {
     this_thread::sleep_for(chrono::milliseconds(waitTime));
+
+    // Wait for the first valid current robot position to make relative movements to it
     if (!firstPose)
     {
       controlPosition[0] = controlPosition[0] + linear[0] * speedFactor;
@@ -211,6 +235,8 @@ void iiwaControl::sendData()
       controlRotEuler[0] = controlRotEuler[0] + angular[0] * angleFactor;
       controlRotEuler[1] = controlRotEuler[1] + angular[1] * angleFactor;
       controlRotEuler[2] = controlRotEuler[2] + angular[2] * angleFactor;
+
+      // Now generate a geometry message from the calculated positions
       header.seq++;
       header.stamp = ros::Time::now();
       geometry_msgs::PoseStamped msg;
@@ -219,6 +245,7 @@ void iiwaControl::sendData()
       msg.pose.position.x = controlPosition[0];
       msg.pose.position.y = controlPosition[1];
       msg.pose.position.z = controlPosition[2];
+      // We need quaternions for the robot position, so calculate them from the euler angles
       tf::Quaternion quat = tf::createQuaternionFromRPY(controlRotEuler[0], controlRotEuler[1], controlRotEuler[2]);
       msg.pose.orientation.w = quat.getW();
       msg.pose.orientation.x = quat.getX();
