@@ -32,18 +32,34 @@
  *  Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.*
  ******************************************************************************/
 
+/*!
+ * \defgroup tapi_iiwa_control tapi_iiwa_control
+ * \file main.cpp
+ * \ingroup tapi_iiwa_control
+ * \author Tobias Holst
+ * \date 08 Sep 2016
+ * \brief Main function of tapi_iiwa_control
+ */
+
 #include "ros/node_handle.h"
 #include "tapi_iiwa_control.hpp"
 
+/*!
+ * \brief Main function of tapi_iiwa_control
+ *
+ * Main function of tapi_gui to initialize ROS, its NodeHandle and then create the robot controller node
+ * \param argc Number of arguments when started from the console
+ * \param argv \c char pointer to the \c char arrays of the given arguments
+ * \return 0 when exited correctly
+ * \see Tapi::iiwaControl
+ */
 int main(int argc, char** argv)
 {
   ros::init(argc, argv, "Tapi_iiwa_Control");
   ros::NodeHandle nh;
   Tapi::iiwaControl iiwa(&nh);
   while (ros::ok())
-  {
-    ros::spin();
-  }
+    ros::spinOnce();
 
   return 0;
 }

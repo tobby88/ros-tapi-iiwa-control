@@ -7,22 +7,19 @@
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <maintainer email="tobby@tobby.eu">Tobias Holst</maintainer>
 
-
   <!-- One license tag required, multiple allowed, one license per tag -->
   <!-- Commonly used license strings: -->
   <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
   <license>GPLv3</license>
 
-
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <url type="repository">https://github.com/tobby88/ros-tapi-iiwa-control</url>
-
+  <url type="website">https://tobby88.github.io/ros-tapi-iiwa-control/html/</url>
 
   <!-- Author tags are optional, mutiple are allowed, one per tag -->
   <!-- Authors do not have to be maintianers, but could be -->
   <author email="tobby@tobby.eu">Tobias Holst</author> -->
-
 
   <!-- The *_depend tags are used to specify dependencies -->
   <!-- Dependencies can be catkin packages or system dependencies -->

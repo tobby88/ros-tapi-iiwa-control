@@ -1,0 +1,22 @@
+actions: []
+authors: Tobias Holst <tobby@tobby.eu>
+brief: ''
+bugtracker: ''
+depends:
+- tapi_lib
+- tapi_iiwa
+- roscpp
+- message_runtime
+- std_msgs
+- geometry_msgs
+- tf
+- catkin
+description: Control Kuka iiwa with relative pointing devices (joystick, spacenav,
+  ...) over the tapi_iiwa package
+license: GPLv3
+maintainers: Tobias Holst <tobby@tobby.eu>
+msgs: []
+package_type: package
+repo_url: https://github.com/tobby88/ros-tapi-iiwa-control
+srvs: []
+url: https://tobby88.github.io/ros-tapi-iiwa-control/html/

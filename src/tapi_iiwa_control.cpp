@@ -32,6 +32,14 @@
  *  Programm erhalten haben. Wenn nicht, siehe <http://www.gnu.org/licenses/>.*
  ******************************************************************************/
 
+/*!
+ * \file tapi_iiwa_control.cpp
+ * \ingroup tapi_iiwa_control
+ * \author Tobias Holst
+ * \date 08 Sep 2016
+ * \brief Defintion of the Tapi::iiwaControl-class
+ */
+
 #include "tapi_iiwa_control.hpp"
 #include <algorithm>
 #include <chrono>
