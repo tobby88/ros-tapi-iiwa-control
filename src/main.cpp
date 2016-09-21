@@ -47,7 +47,7 @@
 /*!
  * \brief Main function of tapi_iiwa_control
  *
- * Main function of tapi_gui to initialize ROS, its NodeHandle and then create the robot controller node
+ * Main function of tapi_iiwa_control to initialize ROS, its NodeHandle and then create the robot controller node
  * \param argc Number of arguments when started from the console
  * \param argv \c char pointer to the \c char arrays of the given arguments
  * \return 0 when exited correctly
