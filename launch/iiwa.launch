@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="tapi_iiwa" type="tapi_iiwa" name="tapi_iiwa" />
+  <node pkg="tapi_iiwa_control" type="tapi_iiwa_control" name="tapi_iiwa_control" />
+</launch>
