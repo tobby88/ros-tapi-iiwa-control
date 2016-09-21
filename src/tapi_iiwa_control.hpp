@@ -288,13 +288,13 @@ private:
    */
   std::thread* sendThread;
 
-  //! \c tapi_lib based serviceclient object to create Tapi compliant ServiceClients
+  //! \c tapi_lib based ServiceClient object to create Tapi compliant ServiceClients
   Tapi::ServiceClient* tclient;
 
-  //! \c tapi_lib based serviceclient object to create Tapi compliant Publishers
+  //! \c tapi_lib based Publisher object to create Tapi compliant Publishers
   Tapi::Publisher* tpub;
 
-  //! \c tapi_lib based serviceclient object to create Tapi compliant Subscribers
+  //! \c tapi_lib based Subscriber object to create Tapi compliant Subscribers
   Tapi::Subscriber* tsub;
 };
 }
