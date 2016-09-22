@@ -58,8 +58,7 @@ int main(int argc, char** argv)
   ros::init(argc, argv, "Tapi_iiwa_Control");
   ros::NodeHandle nh;
   Tapi::iiwaControl iiwa(&nh);
-  while (ros::ok())
-    ros::spinOnce();
+  ros::spin();
 
   return 0;
 }
